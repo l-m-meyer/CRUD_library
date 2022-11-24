@@ -9,6 +9,21 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+// mongoose setup
+const mongoose = require('mongoose');
+// setup connection
+const mongoDB = 'mongodb://127.0.0.0/my_database';
+mongoose.connect(mongoDB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+// get the default connection
+const db = mongoose.connection;
+
+// bind connection to error event
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
