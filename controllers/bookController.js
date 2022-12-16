@@ -36,8 +36,17 @@ exports.index = (req, res) => {
 };
 
 // Display list of all books.
-exports.book_list = (req, res) => {
-  res.send("NOT IMPLEMENTED: Book list");
+exports.book_list = (req, res, next) => {
+  Book.find({}, "title author") // find all books, only return title and author fields (will also return the _id and virtual fields)
+    .sort({ title: 1 }) // sort results by title alphabetically
+    .populate("author") // replace the stored book author id with the full author details
+    .exec(function (err, list_books) {
+      if (err) {
+        return next(err);
+      }
+      // successful, so render book_list.pug template and pass title and book_list as variables
+      res.render("book_list", { title: "Book List", book_list: list_books });
+    })
 };
 
 // Display detail page for a specific book.
